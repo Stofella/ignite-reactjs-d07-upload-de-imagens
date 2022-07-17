@@ -23,20 +23,13 @@ interface GetImagesResponse {
 
 export default function Home(): JSX.Element {
   const fetchImages = async ({ pageParam = 0 }) => {
+    const response = await api.get<GetImagesResponse>('/api/images', {
+      params: {
+        after: pageParam
+      }
+    });
 
-    try {
-      const response = await api.get<GetImagesResponse>('/api/images', {
-        params: {
-          after: pageParam
-        }
-      });
-
-      return response.data;
-    }
-    catch (err) {
-      console.log('There was an error while fetching the images', err);
-    }
-
+    return response.data;
   };
 
   const {
@@ -57,7 +50,8 @@ export default function Home(): JSX.Element {
   if (isLoading)
     return (<Loading />);
 
-  // TODO RENDER ERROR SCREEN
+  if (isError)
+    return (<Error />);
 
   return (
     <>
